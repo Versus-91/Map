@@ -6,6 +6,6 @@ window.onload = () => {
   // YOUR CODE GOES HERE
   console.log("YOUR CODE GOES HERE");
 
-  // Load the data set from the assets folder
+  // Load the data set from the assets folder:
 
 };
