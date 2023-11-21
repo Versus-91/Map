@@ -558,5 +558,8 @@ window.onload = async () => {
   height: 600,
   invalidation:null // a promise to stop the simulation when the cell is re-run
 })
-  d3.select("body").append(chart)
+const container = d3.select('body');
+
+// Append the returned SVG element to the container in the DOM
+container.node().appendChild(chart);
 };
