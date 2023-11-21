@@ -64,12 +64,6 @@ window.onload = async () => {
 
     capitalGroups.append("circle").attr("r", 2);
 
-    capitalGroups
-      .append("text")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", 10)
-      .attr("text-anchor", "middle")
-      .attr("y", -6)
-      .text(({ description }) => description);
+
   });
 };
