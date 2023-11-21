@@ -13,7 +13,7 @@ window.onload = async () => {
     const colorScale = d3
       .scaleSequential(d3.interpolateBlues) // Change interpolateBlues to any other color scheme you prefer
       .domain([0, d3.max(states.geometries, (d) => parseInt(d.id))]);
-    const width = 800;
+    const width = 960;
     const height = 600;
     const svg = d3
       .select("body")
@@ -48,25 +48,22 @@ window.onload = async () => {
       longitude: parseFloat(m.longitude),
       description: m.name,
     }));
+    const stateCapitalElements = svg.selectAll("g").data(points).join("g");
     const projection = d3
       .geoAlbersUsa()
-      .translate([width / 2, height / 2])
-      .scale(1280);
-    svg
-      .selectAll("circle")
-      .data(points)
-      .enter()
-      .append("circle")
-      .attr("cx", ({ longitude, latitude, name }) => {
+      .scale(1280)
+      .translate([width / 2, height / 2]);
+
+    const capitalGroups = stateCapitalElements
+      .append("g")
+      .attr("transform", ({ longitude, latitude, name }) => {
         let res = projection([longitude, latitude]);
-        return res?.[0];
-      })
-      .attr("cy", ({ longitude, latitude, name }) => {
-        let res = projection([longitude, latitude]);
-        return res?.[1];
-      })
-      .attr("r", 2)
-      .style("fill", "red")
-      .style("opacity", 0.75);
+        if (!res) {
+          console.log(longitude, latitude, name);
+        }
+        return `translate(${projection([longitude, latitude])?.join(",")})`;
+      });
+
+    capitalGroups.append("circle").attr("r", 2)
   });
 };
