@@ -57,9 +57,15 @@ window.onload = async () => {
       .data(points)
       .enter()
       .append("circle")
-      .attr("cx", ({ longitude, latitude, name }) => projection([longitude, latitude])?.join(","))
-      .attr("cy", ({ longitude, latitude, name }) => projection([longitude, latitude])?.join(","))
-      .attr("r", 5)
+      .attr("cx", ({ longitude, latitude, name }) => {
+        let res = projection([longitude, latitude]);
+        return res?.[0];
+      })
+      .attr("cy", ({ longitude, latitude, name }) => {
+        let res = projection([longitude, latitude]);
+        return res?.[1];
+      })
+      .attr("r", 2)
       .style("fill", "red")
       .style("opacity", 0.75);
   });
