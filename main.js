@@ -13,8 +13,6 @@ window.onload = async () => {
     const colorScale = d3
       .scaleSequential(d3.interpolateBlues) // Change interpolateBlues to any other color scheme you prefer
       .domain([0, d3.max(states.geometries, (d) => parseInt(d.id))]);
-    // Step 3. Draw the SVG.
-    // First let's create an empty SVG with 960px width and 600px height.
     const width = 960;
     const height = 600;
     const svg = d3
@@ -42,28 +40,30 @@ window.onload = async () => {
         return stateValue ? colorScale(stateValue) : "gray"; // Default color for missing data
       })
       .attr("d", path);
-    
-    airports = airports.filter(m=> m.country === 'USA')  
-    const points =airports.map(m =>({
-      name : m.name,
-      latitude : parseFloat(m.latitude),
-      longitude : parseFloat(m.longitude),
-      description : m.name,
-    }))
+
+    airports = airports.filter((m) => m.country === "USA");
+    const points = airports.map((m) => ({
+      name: m.name,
+      latitude: parseFloat(m.latitude),
+      longitude: parseFloat(m.longitude),
+      description: m.name,
+    }));
     const stateCapitalElements = svg.selectAll("g").data(points).join("g");
     const projection = d3
       .geoAlbersUsa()
-      .scale(1300)
+      .scale(1280)
       .translate([width / 2, height / 2]);
 
     const capitalGroups = stateCapitalElements
       .append("g")
-      .attr("transform", ({ longitude, latitude }) => {
+      .attr("transform", ({ longitude, latitude, name }) => {
+        let res = projection([longitude, latitude]);
+        if (!res) {
+          console.log(longitude, latitude, name);
+        }
         return `translate(${projection([longitude, latitude])?.join(",")})`;
       });
 
     capitalGroups.append("circle").attr("r", 2);
-
-
   });
 };
