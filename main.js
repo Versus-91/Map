@@ -425,7 +425,8 @@ window.onload = async () => {
 
   // Create the SVG container.
   const svg = d3
-    .create("svg")
+    .select("body")
+    .append("svg")
     .attr("width", width)
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
@@ -478,6 +479,7 @@ window.onload = async () => {
 
   // Update the subject (dragged node) position during drag.
   function dragged(event) {
+    console.log(event)
     event.subject.fx = event.x;
     event.subject.fy = event.y;
   }
@@ -494,5 +496,4 @@ window.onload = async () => {
   // really matter since the target alpha is zero and the simulation will
   // stop naturally, but it’s a good practice.)
   //invalidation.then(() => simulation.stop());
-  d3.select("body").append(svg)
 };
