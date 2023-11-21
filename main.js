@@ -58,35 +58,24 @@ window.onload = async () => {
     .enter()
     .append("path")
     .attr("d", path);
-  // Define your points with their coordinates
-  const points = [
-    { name: "Point 1", coordinates: [ 40.7128, -74.0060] },
-    { name: "Point 2", coordinates: [34.0522, -118.2437] },
-    // Add more points as needed
-  ];
 
-  // Add points to the map as circles
-  svg
-    .selectAll(".point")
-    .data(points)
-    .enter()
-    .append("circle")
-    .attr("class", "point")
-    .attr("r", 5) // Set the radius of the circle
-    .attr("cx", (d) => projection(d.coordinates)[0]) // Calculate the X position
-    .attr("cy", (d) => projection(d.coordinates)[1]) // Calculate the Y position
-    .style("fill", "red")
-    .style("opacity", 0.8);
+  const stateCapitalElements = svg.selectAll("g").data(data).join("g");
 
-  // You can add labels or tooltips for the points if needed
-  svg
-    .selectAll(".point-label")
-    .data(points)
-    .enter()
+  const capitalGroups = stateCapitalElements
+    .append("g")
+    .attr(
+      "transform",
+      ({ longitude, latitude }) =>
+        `translate(${projection([longitude, latitude]).join(",")})`
+    );
+
+  capitalGroups.append("circle").attr("r", 2);
+
+  capitalGroups
     .append("text")
-    .attr("class", "point-label")
-    .attr("x", (d) => projection(d.coordinates)[0] + 10) // Adjust label position
-    .attr("y", (d) => projection(d.coordinates)[1] + 5) // Adjust label position
-    .text((d) => d.name)
-    .style("fill", "black");
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+    .attr("text-anchor", "middle")
+    .attr("y", -6)
+    .text(({ description }) => description);
 };
