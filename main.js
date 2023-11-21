@@ -51,7 +51,7 @@ window.onload = async () => {
     const projection = d3
       .geoAlbersUsa()
       .translate([width / 2, height / 2])
-      .scale(1000);
+      .scale(1280);
     svg
       .selectAll("circle")
       .data(points)
