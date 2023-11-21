@@ -7,7 +7,6 @@ window.onload = async () => {
 
   // Load the data set from the assets folder:
   // select the canvas element created in the html.
-  const canvas = document.getElementById("my_dataviz");
   const us = await d3.json("https://d3js.org/us-10m.v2.json");
   const states = us.objects.states;
   const data = topojson.feature(us, us.objects.states).features;
@@ -36,37 +35,57 @@ window.onload = async () => {
     .append("path")
     .style("fill", (d) => {
       const stateName = d.properties.name; // Assuming the state name property is 'name'
-      // Find the corresponding data value for the state
-      console.log(stateName);
-
-      console.log(states.geometries);
-
       const stateValue = states.geometries.find(
         (s) => s.properties.name === stateName
       )?.id;
       // Return the color based on the value using the color scale
-      console.log(stateValue);
       return stateValue ? colorScale(stateValue) : "gray"; // Default color for missing data
     })
     .attr("d", path);
 
-  // Use the path to plot the US map based on the geometry data.
-  d3.select(svg)
-    .append("g")
-    .selectAll("path")
-    .data(data)
-    .enter()
-    .append("path")
-    .attr("d", path);
-
-  const stateCapitalElements = svg.selectAll("g").data(data).join("g");
-
+  const points = [
+    {
+      name: "Alabama",
+      description: "Montgomery",
+      latitude: 32.377716,
+      longitude: -86.300568,
+    },
+    {
+      name: "Alaska",
+      description: "Juneau",
+      latitude: 58.301598,
+      longitude: -134.420212,
+    },
+    {
+      name: "Arizona",
+      description: "Phoenix",
+      latitude: 33.448143,
+      longitude: -112.096962,
+    },
+    {
+      name: "Arkansas",
+      description: "Little Rock",
+      latitude: 34.746613,
+      longitude: -92.288986,
+    },
+  ];
+  
+  const stateCapitalElements = svg.selectAll("g").data(points).join("g");
+  const projection = d3
+    .geoAlbersUsa()
+    .scale(1300)
+    .translate([width / 2, height / 2]);
+  
   const capitalGroups = stateCapitalElements
     .append("g")
     .attr(
       "transform",
-      ({ longitude, latitude }) =>
-        `translate(${projection([longitude, latitude]).join(",")})`
+      ({ longitude, latitude }) =>{
+        console.log(longitude, latitude)
+        console.log(projection([longitude, latitude]))
+        return  `translate(${projection([longitude, latitude]).join(",")})`
+      }
+       
     );
 
   capitalGroups.append("circle").attr("r", 2);
