@@ -5,19 +5,35 @@ window.onload = async () => {
   var color = d3.scaleOrdinal(d3.schemeCategory10);
   d3.csv(
     "https://cdn.glitch.com/489e63ad-3e39-4120-8308-827b57d31840%2Fflights-airport-5000plus.csv?v=1606135273372"
-  ).then(async function (miserables) {
+  ).then(async function (items) {
     var label = {
       nodes: [],
       links: [],
     };
-    const graph = miserables;
-    graph.forEach(function (d, i) {
+    // Extracting unique origins
+    const uniqueOrigins = [...new Set(items.map(item => item.origin))];
+
+    // Creating an object with IDs equal to unique origins
+    const originsObject = {};
+    uniqueOrigins.forEach(origin => {
+      originsObject[origin] = { id: origin,group:1 };
+    });
+    
+    const graph = {
+      nodes : originsObject,
+      links : items.map(m =>({
+      "source": m.origin,
+      "target": m.destination,
+      "value": m.count
+      }))
+    }
+    graph.nodes.forEach(function (d, i) {
       console.log(d);
       label.nodes.push({ node: d });
       label.nodes.push({ node: d });
       label.links.push({
-        source: d.origin,
-        target: d.destination,
+        source: i * 2,
+        target: i * 2 + 1,
       });
     });
 
