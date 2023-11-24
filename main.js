@@ -316,19 +316,28 @@ window.onload = async () => {
     });
   }
   let view = 0;
+  // Get a reference to your SVG element
+  const svgElement = document.getElementById("viz");
+
+  // Function to clear the SVG
+  function clearSVG() {
+    // Remove all child elements within the SVG
+    while (svgElement.firstChild) {
+      svgElement.removeChild(svgElement.firstChild);
+    }
+  }
   // Event listener for the button click
   document
     .getElementById("toggle")
     .addEventListener("click", async function () {
-      console.log("clicked");
       if (view === 0) {
-        d3.select('#map').select('svg').remove();
-        d3.select('#graph').select('svg').remove();
+        d3.select("#map").select("svg").remove();
+        clearSVG();
         view = 1;
         await force_chart();
       } else {
-        d3.select('#map').select('svg').remove();
-        d3.select('#graph').select('svg').remove();
+        d3.select("#map").select("svg").remove();
+        clearSVG();
         view = 0;
         await map();
       }
