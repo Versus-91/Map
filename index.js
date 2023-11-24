@@ -1,4 +1,4 @@
-// credit https://gist.github.com/mapio/53fed7d84cd1812d6a6639ed7aa83868
+// credit
 
 var d3;
 window.onload = async () => {
@@ -30,6 +30,7 @@ window.onload = async () => {
       }))
     }
     graph.nodes.forEach(function (d, i) {
+      console.log(d);
       label.nodes.push({ node: d });
       label.nodes.push({ node: d });
       label.links.push({
