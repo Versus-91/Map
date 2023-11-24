@@ -112,7 +112,10 @@ window.onload = async () => {
       .enter()
       .append("line")
       .attr("stroke", "#aaa")
-      .attr("stroke-width", "1px");
+      .attr("stroke-width", function(d) {
+          // console.log("width ", Math.sqrt(d.count/20)-15);
+          return Math.sqrt(d.value/20)-15;
+        });
 
     var node = container
       .append("g")
