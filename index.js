@@ -113,7 +113,6 @@ window.onload = async () => {
       .append("line")
       .attr("stroke", "#aaa")
       .attr("stroke-width", function(d) {
-          // console.log("width ", Math.sqrt(d.count/20)-15);
           return Math.sqrt(d.value/20)-15;
         });
 
@@ -124,7 +123,11 @@ window.onload = async () => {
       .data(graph.nodes)
       .enter()
       .append("circle")
-      .attr("r", 5)
+      .attr("r", (d)=>{
+        
+        console.log(Math.sqrt(d.totalFlights /1000))
+        return Math.sqrt(d.totalFlights /1000)
+      })
       .attr("fill", function (d) {
         return color(d.group);
       });

@@ -64,4 +64,5 @@ window.onload = async () => {
     capitalGroups.append("circle").attr("r", 2);
   });
 
+
 };
