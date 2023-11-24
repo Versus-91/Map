@@ -1,3 +1,5 @@
+// credit https://gist.github.com/mapio/53fed7d84cd1812d6a6639ed7aa83868
+
 var d3;
 window.onload = async () => {
   var width = 800;
@@ -14,13 +16,13 @@ window.onload = async () => {
     const uniqueOrigins = [...new Set(items.map(item => item.origin))];
 
     // Creating an object with IDs equal to unique origins
-    const originsObject = {};
+    const nodes = [];
     uniqueOrigins.forEach(origin => {
-      originsObject[origin] = { id: origin,group:1 };
+      nodes.push({ id: origin,group:1 }) ;
     });
     
     const graph = {
-      nodes : originsObject,
+      nodes : nodes,
       links : items.map(m =>({
       "source": m.origin,
       "target": m.destination,
@@ -28,7 +30,6 @@ window.onload = async () => {
       }))
     }
     graph.nodes.forEach(function (d, i) {
-      console.log(d);
       label.nodes.push({ node: d });
       label.nodes.push({ node: d });
       label.links.push({
