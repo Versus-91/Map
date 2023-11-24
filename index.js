@@ -12,25 +12,44 @@ window.onload = async () => {
       nodes: [],
       links: [],
     };
-    // Extracting unique origins
-    const uniqueOrigins = [...new Set(items.map(item => item.origin))];
+    // Extract unique origins and destinations
+    const uniqueOrigins = [...new Set(items.map((item) => item.origin))];
+    const uniqueDestinations = [
+      ...new Set(items.map((item) => item.destination)),
+    ];
 
-    // Creating an object with IDs equal to unique origins
-    const nodes = [];
-    uniqueOrigins.forEach(origin => {
-      nodes.push({ id: origin,group:1 }) ;
-    });
-    
+    // Combine unique origins and destinations to get all unique airports
+    const uniqueAirports = [
+      ...new Set([...uniqueOrigins, ...uniqueDestinations]),
+    ];
+
+    // Create nodes based on unique airports and calculate total flights per airport
+    const nodes = uniqueAirports.map((airport) => ({
+      id: airport,
+      group: 1,
+      totalFlights: items.reduce((acc, item) => {
+        if (item.origin === airport) acc += +item.count;
+        if (item.destination === airport) acc += +item.count;
+        return acc;
+      }, 0),
+    }));
+
+    // Create links with source, target, and value (count of flights)
+    const links = items.map((item) => ({
+      source: item.origin,
+      target: item.destination,
+      value: +item.count,
+    }));
+
     const graph = {
-      nodes : nodes,
-      links : items.map(m =>({
-      "source": m.origin,
-      "target": m.destination,
-      "value": m.count
-      }))
-    }
+      nodes: nodes,
+      links: items.map((m) => ({
+        source: m.origin,
+        target: m.destination,
+        value: m.count,
+      })),
+    };
     graph.nodes.forEach(function (d, i) {
-      console.log(d);
       label.nodes.push({ node: d });
       label.nodes.push({ node: d });
       label.links.push({
