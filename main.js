@@ -12,15 +12,10 @@ window.onload = async () => {
       const us = await d3.json("https://d3js.org/us-10m.v2.json");
       const states = us.objects.states;
       const data = topojson.feature(us, us.objects.states).features;
-      const colorScale = d3
-        .scaleSequential(d3.schemeCategory10) // Change interpolateBlues to any other color scheme you prefer
-        .domain([0, d3.max(states.geometries, (d) => parseInt(d.id))]);
+      const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
       const width = 960;
       const height = 600;
-      const svg = d3
-        .select("#map")
-        .append("svg")
-        
+      const svg = d3.select("#map").append("svg");
 
       // Create an instance of geoPath.
       const path = d3.geoPath();
@@ -44,24 +39,61 @@ window.onload = async () => {
       airports = airports.filter((m) => m.country === "USA");
       const points = airports.map((m) => ({
         name: m.name,
+        region: m.state,
         latitude: parseFloat(m.latitude),
         longitude: parseFloat(m.longitude),
         description: m.name,
       }));
-      const stateCapitalElements = svg.selectAll("g").data(points).join("g");
       const projection = d3
         .geoAlbersUsa()
         .scale(1280)
         .translate([width / 2, height / 2]);
+      
+      
+            // create a tooltip
+      var Tooltip = d3
+        .select("#div_template")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px");
+      // Three function that change the tooltip when user hover / move / leave a cell
+      var mouseover = function (d) {
+        Tooltip.style("opacity", 1);
+        d3.select(this).style("stroke", "black").style("opacity", 1);
+      };
+      var mousemove = function (d) {
+        Tooltip.html("The exact value of<br>this cell is: " + d.value)
+          .style("left", d3.mouse(this)[0] + 70 + "px")
+          .style("top", d3.mouse(this)[1] + "px");
+      };
+      var mouseleave = function (d) {
+        Tooltip.style("opacity", 0);
+        d3.select(this).style("stroke", "none").style("opacity", 0.8);
+      };
 
-      const capitalGroups = stateCapitalElements
+      svg
+        .selectAll("g")
+        .data(points)
+        .join("g")
         .append("g")
         .attr("transform", ({ longitude, latitude, name }) => {
           let res = projection([longitude, latitude]);
           return `translate(${projection([longitude, latitude])?.join(",")})`;
-        });
-
-      capitalGroups.append("circle").attr("r", 2);
+        })
+        .append("circle")
+        .attr("r", 2)
+        .attr("fill", function (d) {
+          console.log(d);
+          return colorScale(d.region);
+        })
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
     });
   }
   async function force_chart() {
@@ -112,8 +144,11 @@ window.onload = async () => {
           value: m.count,
         })),
       };
-      var svg = d3.select("#viz").append("svg").attr("width", width)
-        .attr("height", height)
+      var svg = d3
+        .select("#viz")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
 
       var color = d3.scaleOrdinal(d3.schemeCategory10);
 
