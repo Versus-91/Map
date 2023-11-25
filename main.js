@@ -139,7 +139,7 @@ window.onload = async () => {
           d3.forceLink().id(function (d) {
             return d.id;
           })
-          .strength(d => d.value * 0.0001)
+          
         )
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
