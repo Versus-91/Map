@@ -1,4 +1,5 @@
 //force graph ref:https://gist.github.com/heybignick/3faf257bbbbc7743bb72310d03b86ee8#file-miserables-json
+//tooltip ref https://gramener.github.io/d3js-playbook/tooltips.html
 var d3; // Minor workaround to avoid error messages in editors
 var topojson;
 // Waiting until document has loaded
@@ -16,10 +17,7 @@ window.onload = async () => {
       const width = 960;
       const height = 600;
       const svg = d3.select("#map").append("svg");
-
-      // Create an instance of geoPath.
       const path = d3.geoPath();
-      // Use the path to plot the US map based on the geometry data.
       svg
         .append("g")
         .selectAll("path")
@@ -27,12 +25,11 @@ window.onload = async () => {
         .enter()
         .append("path")
         .style("fill", (d) => {
-          const stateName = d.properties.name; // Assuming the state name property is 'name'
+          const stateName = d.properties.name;
           const stateValue = states.geometries.find(
             (s) => s.properties.name === stateName
           )?.id;
-          // Return the color based on the value using the color scale
-          return stateValue ? colorScale(stateValue) : "gray"; // Default color for missing data
+          return colorScale(stateValue);
         })
         .attr("d", path);
 
@@ -48,33 +45,12 @@ window.onload = async () => {
         .geoAlbersUsa()
         .scale(1280)
         .translate([width / 2, height / 2]);
-      
-      
-            // create a tooltip
-      var Tooltip = d3
-        .select("#div_template")
+
+      var tip = d3
+        .select("body")
         .append("div")
-        .style("opacity", 0)
         .attr("class", "tooltip")
-        .style("background-color", "white")
-        .style("border", "solid")
-        .style("border-width", "2px")
-        .style("border-radius", "5px")
-        .style("padding", "5px");
-      // Three function that change the tooltip when user hover / move / leave a cell
-      var mouseover = function (d) {
-        Tooltip.style("opacity", 1);
-        d3.select(this).style("stroke", "black").style("opacity", 1);
-      };
-      var mousemove = function (d) {
-        Tooltip.html("The exact value of<br>this cell is: " + d.value)
-          .style("left", d3.mouse(this)[0] + 70 + "px")
-          .style("top", d3.mouse(this)[1] + "px");
-      };
-      var mouseleave = function (d) {
-        Tooltip.style("opacity", 0);
-        d3.select(this).style("stroke", "none").style("opacity", 0.8);
-      };
+        .style("opacity", 0);
 
       svg
         .selectAll("g")
@@ -87,13 +63,17 @@ window.onload = async () => {
         })
         .append("circle")
         .attr("r", 2)
-        .attr("fill", function (d) {
-          console.log(d);
-          return colorScale(d.region);
+        .attr("fill", "white")
+        .on("mouseover", function (d) {
+          tip
+            .style("opacity", 1)
+            .html(d.name + "<br/> state: " + d.region)
+            .style("left", d3.event.pageX - 25 + "px")
+            .style("top", d3.event.pageY - 75 + "px");
         })
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
+        .on("mouseout", function (d) {
+          tip.style("opacity", 0);
+        });
     });
   }
   async function force_chart() {
