@@ -62,8 +62,8 @@ window.onload = async () => {
           return `translate(${projection([longitude, latitude])?.join(",")})`;
         })
         .append("circle")
-        .attr("r", 2)
-        .attr("fill", "white")
+        .attr("r",2)
+        .attr("fill", "black")
         .on("mouseover", function (d) {
           tip
             .style("opacity", 1)
