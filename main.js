@@ -139,6 +139,7 @@ window.onload = async () => {
           d3.forceLink().id(function (d) {
             return d.id;
           })
+          .strength(d => d.value * 0.0001)
         )
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
@@ -151,7 +152,7 @@ window.onload = async () => {
         .enter()
         .append("line")
         .attr("stroke-width", function (d) {
-          return Math.sqrt(d.value / 300) ;
+          return Math.sqrt(d.value / 20) - 20;
         });
 
       var node = svg
@@ -165,7 +166,7 @@ window.onload = async () => {
       var circles = node
         .append("circle")
         .attr("r", (d) => {
-          return Math.sqrt(d.totalFlights / 300);
+          return Math.sqrt(d.totalFlights / 500);
         })
         .attr("fill", function (d) {
           return color(d.id);
