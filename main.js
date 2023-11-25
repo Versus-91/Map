@@ -1,3 +1,4 @@
+//force graph ref:https://gist.github.com/heybignick/3faf257bbbbc7743bb72310d03b86ee8#file-miserables-json
 var d3; // Minor workaround to avoid error messages in editors
 var topojson;
 // Waiting until document has loaded
@@ -12,15 +13,14 @@ window.onload = async () => {
       const states = us.objects.states;
       const data = topojson.feature(us, us.objects.states).features;
       const colorScale = d3
-        .scaleSequential(d3.interpolateBlues) // Change interpolateBlues to any other color scheme you prefer
+        .scaleSequential(d3.schemeCategory10) // Change interpolateBlues to any other color scheme you prefer
         .domain([0, d3.max(states.geometries, (d) => parseInt(d.id))]);
       const width = 960;
       const height = 600;
       const svg = d3
-        .select("#viz")
+        .select("#map")
         .append("svg")
-        .attr("width", width)
-        .attr("height", height);
+        
 
       // Create an instance of geoPath.
       const path = d3.geoPath();
@@ -65,7 +65,7 @@ window.onload = async () => {
     });
   }
   async function force_chart() {
-    var width = 800;
+    var width = 960;
     var height = 600;
     var color = d3.scaleOrdinal(d3.schemeCategory10);
     d3.csv(
@@ -112,9 +112,8 @@ window.onload = async () => {
           value: m.count,
         })),
       };
-      var svg = d3.select("svg"),
-        width = +svg.attr("width"),
-        height = +svg.attr("height");
+      var svg = d3.select("#viz").append("svg").attr("width", width)
+        .attr("height", height)
 
       var color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -236,6 +235,8 @@ window.onload = async () => {
       svgElement.removeChild(svgElement.firstChild);
     }
   }
+  const mapSvg = document.getElementById("map");
+  const vizSvg = document.getElementById("viz");
   // Event listener for the button click
   document
     .getElementById("toggle")
@@ -244,10 +245,15 @@ window.onload = async () => {
         clearSVG("viz");
         clearSVG("map");
         view = 1;
+        mapSvg.style.display = "none";
+        vizSvg.style.display = "block";
+
         await force_chart();
       } else {
         clearSVG("viz");
-        clearSVG("map"); 
+        clearSVG("map");
+        mapSvg.style.display = "block";
+        vizSvg.style.display = "none";
         view = 0;
         await map();
       }
