@@ -151,7 +151,7 @@ window.onload = async () => {
         .enter()
         .append("line")
         .attr("stroke-width", function (d) {
-          return Math.sqrt(d.value / 20) - 15;
+          return Math.sqrt(d.value / 300) ;
         });
 
       var node = svg
