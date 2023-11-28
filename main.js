@@ -31,6 +31,7 @@ window.onload = async () => {
           )?.id;
           return colorScale(stateValue);
         })
+      
         .attr("d", path);
 
       airports = airports.filter((m) => m.country === "USA");
