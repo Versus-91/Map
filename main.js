@@ -31,7 +31,7 @@ window.onload = async () => {
           )?.id;
           return colorScale(stateValue);
         })
-      
+
         .attr("d", path);
 
       airports = airports.filter((m) => m.country === "USA");
@@ -63,12 +63,12 @@ window.onload = async () => {
           return `translate(${projection([longitude, latitude])?.join(",")})`;
         })
         .append("circle")
-        .attr("r",2)
+        .attr("r", 2)
         .attr("fill", "black")
         .on("mouseover", function (d) {
           tip
             .style("opacity", 1)
-            .html("name : "+ d.name + "<br/> state: " + d.region)
+            .html("name : " + d.name + "<br/> state: " + d.region)
             .style("left", d3.event.pageX - 25 + "px")
             .style("top", d3.event.pageY - 75 + "px");
         })
@@ -116,7 +116,7 @@ window.onload = async () => {
         target: item.destination,
         value: +item.count,
       }));
-      console.log(links)
+      console.log(links);
       const graph = {
         nodes: nodes,
         links: items.map((m) => ({
@@ -140,7 +140,6 @@ window.onload = async () => {
           d3.forceLink().id(function (d) {
             return d.id;
           })
-          
         )
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
@@ -264,7 +263,6 @@ window.onload = async () => {
         view = 1;
         mapSvg.style.display = "none";
         vizSvg.style.display = "block";
-
         await force_chart();
       } else {
         clearSVG("viz");
@@ -275,4 +273,10 @@ window.onload = async () => {
         await map();
       }
     });
+  clearSVG("viz");
+  clearSVG("map");
+  view = 1;
+  mapSvg.style.display = "none";
+  vizSvg.style.display = "block";
+  await force_chart();
 };
