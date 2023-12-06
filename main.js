@@ -65,7 +65,13 @@ window.onload = async () => {
         latitude: parseFloat(m.latitude),
         longitude: parseFloat(m.longitude),
         description: m.name,
+        totalFlights: items.reduce((acc, item) => {
+          if (item.origin === m.itata) acc += +item.count;
+          if (item.destination === m.iata) acc += +item.count;
+          return acc;
+        }, 0),
       }));
+      
       const projection = d3
         .geoAlbersUsa()
         .scale(1280)
@@ -87,8 +93,10 @@ window.onload = async () => {
           return `translate(${projection([longitude, latitude])?.join(",")})`;
         })
         .append("circle")
-        .attr("r", 4)
-        .attr("fill", "#F1C40F")
+        .attr("r", (d) => {
+          return Math.sqrt(d.totalFlights / 500);
+        })
+        .attr("fill", "#D68910")
         .on("mouseover", function (d) {
           tip
             .style("opacity", 1)
@@ -124,7 +132,6 @@ window.onload = async () => {
         )
         .attr("stroke", "#34495E")
         .attr("stroke-width", (d) =>{
-        console.log(d.count)
         return Math.sqrt(d.count / 20) - 20
       });
     });
@@ -168,7 +175,6 @@ window.onload = async () => {
         target: item.destination,
         value: +item.count,
       }));
-      console.log(links);
       const graph = {
         nodes: nodes,
         links: items.map((m) => ({
