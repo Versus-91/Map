@@ -17,6 +17,26 @@ window.onload = async () => {
       const width = 960;
       const height = 600;
       const svg = d3.select("#map").append("svg");
+      const items = await d3.csv(
+        "https://cdn.glitch.com/489e63ad-3e39-4120-8308-827b57d31840%2Fflights-airport-5000plus.csv?v=1606135273372"
+      );
+      // Create a map of airports for easy access
+      const airportMap = new Map(
+        airports.map((airport) => [airport.name, airport])
+      );
+
+      // Filter flights that have both origin and destination in the airports list
+      const validFlights = items.filter(
+        (flight) =>
+          airportMap.has(flight.origin) && airportMap.has(flight.destination)
+      );
+
+      // Create edges connecting airports based on valid flights
+      const edges = validFlights.map((flight) => ({
+        source: airportMap.get(flight.origin),
+        target: airportMap.get(flight.destination),
+        count: +flight.count, // Assuming 'count' represents the number of flights between the airports
+      }));
       const path = d3.geoPath();
       svg
         .append("g")
@@ -75,6 +95,31 @@ window.onload = async () => {
         .on("mouseout", function (d) {
           tip.style("opacity", 0);
         });
+
+      // Draw edges (lines connecting airports)
+      svg
+        .selectAll("line")
+        .data(edges)
+        .enter()
+        .append("line")
+        .attr(
+          "x1",
+          (d) => projection([d.source.longitude, d.source.latitude])[0]
+        )
+        .attr(
+          "y1",
+          (d) => projection([d.source.longitude, d.source.latitude])[1]
+        )
+        .attr(
+          "x2",
+          (d) => projection([d.target.longitude, d.target.latitude])[0]
+        )
+        .attr(
+          "y2",
+          (d) => projection([d.target.longitude, d.target.latitude])[1]
+        )
+        .attr("stroke", "black")
+        .attr("stroke-width", (d) => Math.sqrt(d.count));
     });
   }
   async function force_chart() {
