@@ -96,7 +96,7 @@ window.onload = async () => {
         .attr("r", (d) => {
           return Math.sqrt(d.totalFlights / 500);
         })
-        .attr("fill", "#D68910")
+        .attr("fill", "#16A085")
         .on("mouseover", function (d) {
           tip
             .style("opacity", 1)
