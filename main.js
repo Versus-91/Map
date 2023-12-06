@@ -53,8 +53,12 @@ window.onload = async () => {
         })
 
         .attr("d", path);
+      const validDestinations = [
+        ...new Set(items.map((item) => item.destination)),
+      ];
+      const validOrigins = [...new Set(items.map((item) => item.origin))];
 
-      airports = airports.filter((m) => m.country === "USA");
+      airports = airports.filter((m) => m.iata === "USA");
       const points = airports.map((m) => ({
         name: m.name,
         region: m.state,
@@ -119,7 +123,7 @@ window.onload = async () => {
           (d) => projection([d.target.longitude, d.target.latitude])[1]
         )
         .attr("stroke", "black")
-        .attr("stroke-width", (d) => Math.sqrt(d.count) /100 +1);
+        .attr("stroke-width", (d) => Math.sqrt(d.value / 20) - 20);
     });
   }
   async function force_chart() {
