@@ -62,6 +62,7 @@ window.onload = async () => {
       const points = airports.map((m) => ({
         name: m.name,
         region: m.state,
+        code:m.iata,
         latitude: parseFloat(m.latitude),
         longitude: parseFloat(m.longitude),
         description: m.name,
@@ -100,7 +101,7 @@ window.onload = async () => {
         .on("mouseover", function (d) {
           tip
             .style("opacity", 1)
-            .html("name : " + d.name + "<br/> state: " + d.region)
+            .html("name : " + d.name + "<br/> state: " + d.region+ "<br/> Code: " + d.code)
             .style("left", d3.event.pageX - 25 + "px")
             .style("top", d3.event.pageY - 75 + "px");
         })
