@@ -22,7 +22,7 @@ window.onload = async () => {
       );
       // Create a map of airports for easy access
       const airportMap = new Map(
-        airports.map((airport) => [airport.name, airport])
+        airports.map((airport) => [airport.iata, airport])
       );
 
       // Filter flights that have both origin and destination in the airports list
@@ -119,7 +119,7 @@ window.onload = async () => {
           (d) => projection([d.target.longitude, d.target.latitude])[1]
         )
         .attr("stroke", "black")
-        .attr("stroke-width", (d) => Math.sqrt(d.count));
+        .attr("stroke-width", (d) => Math.sqrt(d.count) /100 +1);
     });
   }
   async function force_chart() {
