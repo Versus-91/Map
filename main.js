@@ -58,7 +58,7 @@ window.onload = async () => {
       ];
       const validOrigins = [...new Set(items.map((item) => item.origin))];
 
-      airports = airports.filter((m) => m.iata === "USA");
+      airports = airports.filter((m) => validOrigins.includes(m.iata) ||validDestinations.includes(m.iata) );
       const points = airports.map((m) => ({
         name: m.name,
         region: m.state,
@@ -87,8 +87,8 @@ window.onload = async () => {
           return `translate(${projection([longitude, latitude])?.join(",")})`;
         })
         .append("circle")
-        .attr("r", 2)
-        .attr("fill", "black")
+        .attr("r", 4)
+        .attr("fill", "#F1C40F")
         .on("mouseover", function (d) {
           tip
             .style("opacity", 1)
@@ -122,8 +122,11 @@ window.onload = async () => {
           "y2",
           (d) => projection([d.target.longitude, d.target.latitude])[1]
         )
-        .attr("stroke", "black")
-        .attr("stroke-width", (d) => Math.sqrt(d.value / 20) - 20);
+        .attr("stroke", "#34495E")
+        .attr("stroke-width", (d) =>{
+        console.log(d.count)
+        return Math.sqrt(d.count / 20) - 20
+      });
     });
   }
   async function force_chart() {
