@@ -96,11 +96,10 @@ window.onload = async () => {
         })
         .append("circle")
         .attr("r", (d) => {
-          return Math.sqrt(d.totalFlights / 500);
+          return Math.sqrt(d.totalFlights / 1000);
         })
         .attr("fill", function (d) {
-          console.log(d.id)
-          return colorScale2(d.id);
+          return colorScale2(d.code);
         })
         .on("mouseover", function (d) {
           tip
