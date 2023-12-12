@@ -14,6 +14,7 @@ window.onload = async () => {
       const states = us.objects.states;
       const data = topojson.feature(us, us.objects.states).features;
       const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+      const colorScale2 = d3.scaleOrdinal(d3.schemeSet3);
       const width = 960;
       const height = 600;
       const svg = d3.select("#map").append("svg");
@@ -97,7 +98,10 @@ window.onload = async () => {
         .attr("r", (d) => {
           return Math.sqrt(d.totalFlights / 500);
         })
-        .attr("fill", "#16A085")
+        .attr("fill", function (d) {
+          console.log(d.id)
+          return colorScale2(d.id);
+        })
         .on("mouseover", function (d) {
           tip
             .style("opacity", 1)
