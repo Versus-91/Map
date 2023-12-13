@@ -96,7 +96,7 @@ window.onload = async () => {
         })
         .append("circle")
         .attr("r", (d) => {
-          return Math.sqrt(d.totalFlights / 1000);
+          return Math.sqrt(d.totalFlights / 1000) ;
         })
         .attr("fill", function (d) {
           return colorScale2(d.code);
