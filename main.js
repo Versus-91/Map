@@ -15,6 +15,7 @@ window.onload = async () => {
       const data = topojson.feature(us, us.objects.states).features;
       const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
       const colorScale2 = d3.scaleOrdinal(d3.schemeSet3);
+
       const width = 960;
       const height = 600;
       const svg = d3.select("#map").append("svg");
@@ -25,7 +26,19 @@ window.onload = async () => {
       const airportMap = new Map(
         airports.map((airport) => [airport.iata, airport])
       );
-
+      const points = airports.map((m) => ({
+        name: m.name,
+        region: m.state,
+        code:m.iata,
+        latitude: parseFloat(m.latitude),
+        longitude: parseFloat(m.longitude),
+        description: m.name,
+        totalFlights: items.reduce((acc, item) => {
+          if (item.origin === m.itata) acc += +item.count;
+          if (item.destination === m.iata) acc += +item.count;
+          return acc;
+        }, 0),
+      }));
       // Filter flights that have both origin and destination in the airports list
       const validFlights = items.filter(
         (flight) =>
@@ -50,7 +63,7 @@ window.onload = async () => {
           const stateValue = states.geometries.find(
             (s) => s.properties.name === stateName
           )?.id;
-          return colorScale(stateValue);
+          return colorScale2(stateValue);
         })
 
         .attr("d", path);
@@ -60,19 +73,7 @@ window.onload = async () => {
       const validOrigins = [...new Set(items.map((item) => item.origin))];
 
       airports = airports.filter((m) => validOrigins.includes(m.iata) ||validDestinations.includes(m.iata) );
-      const points = airports.map((m) => ({
-        name: m.name,
-        region: m.state,
-        code:m.iata,
-        latitude: parseFloat(m.latitude),
-        longitude: parseFloat(m.longitude),
-        description: m.name,
-        totalFlights: items.reduce((acc, item) => {
-          if (item.origin === m.itata) acc += +item.count;
-          if (item.destination === m.iata) acc += +item.count;
-          return acc;
-        }, 0),
-      }));
+
       
       const projection = d3
         .geoAlbersUsa()
@@ -99,7 +100,7 @@ window.onload = async () => {
           return Math.sqrt(d.totalFlights / 1000) ;
         })
         .attr("fill", function (d) {
-          return colorScale2(d.code);
+          return colorScale(d.code);
         })
         .on("mouseover", function (d) {
           tip
